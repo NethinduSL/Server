@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy Node.js Project</title>
+</head>
+<body>
+    <h1>Deploy Node.js Project</h1>
+    <form id="deployForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="repoUrl">Repository URL:</label>
+        <input type="text" id="repoUrl" name="repoUrl" required><br><br>
+
+        <button type="submit">Deploy</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+        const deployForm = document.getElementById('deployForm');
+        const outputDiv = document.getElementById('output');
+
+        deployForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const repoUrl = document.getElementById('repoUrl').value;
+
+            const response = await fetch('/deploy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, repoUrl }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                outputDiv.innerHTML = `<h3>Deployment Successful!</h3><pre>${result.consoleOutput}</pre>`;
+            } else {
+                outputDiv.innerHTML = `<h3>Error:</h3><pre>${result.message}</pre>`;
+            }
+        });
+    </script>
+</body>
+</html>
